@@ -44,7 +44,7 @@
 // Your puzzle answer was 1766.
 
 // Solution part 1:
-const solution = (nums) => {
+const solutionPart1 = (nums) => {
   let count = 0
 
   for (let i = 0; i < nums.length - 1; i++) {
