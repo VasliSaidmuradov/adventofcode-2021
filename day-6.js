@@ -57,24 +57,66 @@
 const input = [3,5,3,1,4,4,5,5,2,1,4,3,5,1,3,5,3,2,4,3,5,3,1,1,2,1,4,5,3,1,4,5,4,3,3,4,3,1,1,2,2,4,1,1,4,3,4,4,2,4,3,1,5,1,2,3,2,4,4,1,1,1,3,3,5,1,4,5,5,2,5,3,3,1,1,2,3,3,3,1,4,1,5,1,5,3,3,1,5,3,4,3,1,4,1,1,1,2,1,2,3,2,2,4,3,5,5,4,5,3,1,4,4,2,4,4,5,1,5,3,3,5,5,4,4,1,3,2,3,1,2,4,5,3,3,5,4,1,1,5,2,5,1,5,5,4,1,1,1,1,5,3,3,4,4,2,2,1,5,1,1,1,4,4,2,2,2,2,2,5,5,2,4,4,4,1,2,5,4,5,2,5,4,3,1,1,5,4,5,3,2,3,4,1,4,1,1,3,5,1,2,5,1,1,1,5,1,1,4,2,3,4,1,3,3,2,3,1,1,4,4,3,2,1,2,1,4,2,5,4,2,5,3,2,3,3,4,1,3,5,5,1,3,4,5,1,1,3,1,2,1,1,1,1,5,1,1,2,1,4,5,2,1,5,4,2,2,5,5,1,5,1,2,1,5,2,4,3,2,3,1,1,1,2,3,1,4,3,1,2,3,2,1,3,3,2,1,2,5,2]
 
 // Part #1
-const lanternfish = (input) => {
-  const DAYS = 80
+// Naive version (BAD)
+// const lanternfish = (input) => {
+//   const DAYS = 80
 
-  const res = [...input]
-  let i = 0
+//   const res = [...input]
+//   let i = 0
 
-  while (i < DAYS) {
-    for (let j = 0; j < res.length; j++) {
-      if (res[j] === 0) {
-        res[j] = 7
-        res.push(9)
-      }
+//   while (i < DAYS) {
+//     for (let j = 0; j < res.length; j++) {
+//       if (res[j] === 0) {
+//         res[j] = 7
+//         res.push(9)
+//       }
 
-      res[j] = res[j] - 1
+//       res[j] = res[j] - 1
+//     }
+
+//     i++
+//   }
+
+//   return 'RESULT: ' + res.length
+// }
+
+
+
+// PART #1 and #2
+const createCounter = (arr) => {
+  const dict = {}
+
+  arr.forEach(elem => {
+    dict[elem] = dict[elem] ? dict[elem] + 1: 1
+  })
+
+  return dict
+}
+
+const simulate = (dict) => {
+  const newDict = {}
+
+  for (let [prop, value] of Object.entries(dict)) {
+    const p = +prop
+
+    if (p > 0) {
+      newDict[`${p - 1}`] = newDict[`${p - 1}`] ? newDict[`${p - 1}`] + value : value
+    } else {
+      newDict['6'] = newDict['6'] ? newDict['6'] +  value : value
+      newDict['8'] = value
     }
-
-    i++
   }
 
-  return 'RESULT: ' + res.length
+  return newDict
+}
+
+const lanternfish = (input, period = 80) => {
+  const counter = createCounter(input)
+  let dict = counter
+
+  for (let i = 0; i < period; i++) {
+    dict = simulate(dict)
+  }
+
+  return Object.values(dict).reduce((acc, val) => acc + val)
 }
